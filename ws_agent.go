@@ -14,6 +14,8 @@ import (
 	"io/ioutil"
 
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"runtime/debug"
@@ -44,7 +46,14 @@ type OKWSAgent struct {
 func (a *OKWSAgent) Start(config *Config) error {
 	a.baseUrl = config.WSEndpoint + "ws/v3?compress=true"
 	log.Printf("Connecting to %s", a.baseUrl)
-	c, _, err := websocket.DefaultDialer.Dial(a.baseUrl, nil)
+	dialer := websocket.DefaultDialer
+	if config.Proxy != "" {
+		dialer.Proxy = func(request *http.Request) (*url.URL, error) {
+			return url.Parse(config.Proxy)
+		}
+	}
+
+	c, _, err := dialer.Dial(a.baseUrl, nil)
 
 	if err != nil {
 		log.Fatalf("dial:%+v", err)
