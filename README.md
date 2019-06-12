@@ -12,7 +12,7 @@ package okexv3
 
 import (
 	"fmt"
-	"github.com/okcoin-okex/open-api-v3-sdk/okex-go-sdk-api"
+	"github.com/beaquant/go-okex-v3"
 	"testing"
 )
 
